@@ -18,6 +18,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USERNAME: ${{ github.repository_owner }}
+      - name: Keep only the flattened calendar
+        run: |
+          python3 .github/scripts/flatten-3d-svg.py \
+            profile-3d-contrib/profile-night-view.svg
+          find profile-3d-contrib -name '*.svg' \
+            ! -name 'profile-night-view.svg' -delete
       - name: Commit & Push
         run: |
           git config user.name github-actions
