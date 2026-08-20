@@ -1,4 +1,4 @@
-<pre>
+```python
 class Kelton:
     """9Sura - AI/ML builder, backend + systems"""
                                                                 #            ..    .-=*%@@#-.::.
@@ -23,6 +23,4 @@ class Kelton:
         "discord":   "nine_ashura",                             #           ...                   ...:
         "github":    "github.com/9Sura",
     }
-
-<img align="right" width="440" src="./profile-3d-contrib/profile-night-view.svg?v=3" alt="3D contribution graph">
-</pre>
+```
