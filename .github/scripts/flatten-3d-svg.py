@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""Reduce a github-profile-3d-contrib SVG to just its contribution calendar
-and crop the canvas to it. The calendar itself is left exactly as generated.
+"""Reduce a github-profile-3d-contrib SVG to just its contribution calendar,
+level the isometric projection so the year runs straight across, and crop the
+canvas to what is left. The bars themselves are untouched -- only the angle the
+grid is laid out at changes, so the 3D blocks still overlap front to back.
 
 The generator lays out the SVG as <style>, a background <rect>, then four
 top-level <g> elements: the calendar, the radar chart, the language pie and
@@ -15,7 +17,11 @@ import xml.etree.ElementTree as ET
 SVG = "http://www.w3.org/2000/svg"
 ET.register_namespace("", SVG)
 
-PAD = 10   # px of breathing room around the calendar
+# The generator lays the grid out on a 30 deg isometric axis, so a year runs
+# down and to the right. Shearing the group by the same angle levels that axis
+# without touching the bars drawn on it.
+SHEAR = 30   # deg
+PAD = 10     # px of breathing room around the calendar
 
 FUNC = re.compile(r"(\w+)\(([^)]*)\)")
 NUM = re.compile(r"-?[\d.]+(?:e-?\d+)?")
@@ -94,6 +100,8 @@ def flatten(path):
     calendar, panels = groups[0], groups[1:]
     for g in panels:
         root.remove(g)
+
+    calendar.set("transform", f"skewY(-{SHEAR})")
 
     x0, y0, x1, y1 = bounds(calendar)
     x0, y0, x1, y1 = x0 - PAD, y0 - PAD, x1 + PAD, y1 + PAD
