@@ -27,6 +27,6 @@ class Kelton:
 
 <div align="center">
 
-![3D contribution graph](./profile-3d-contrib/profile-night-view.svg)
+![3D contribution graph](./profile-3d-contrib/profile-night-view.svg?v=2)
 
 </div>
