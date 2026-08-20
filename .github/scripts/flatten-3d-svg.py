@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Reduce a github-profile-3d-contrib SVG to just its contribution calendar,
-level the isometric projection so the year runs straight across, and crop the
-canvas to what is left. The bars themselves are untouched -- only the angle the
+level the isometric projection so the year runs straight across, drop the
+opaque background, and crop the canvas to what is left. The bars themselves are untouched -- only the angle the
 grid is laid out at changes, so the 3D blocks still overlap front to back.
 
 The generator lays out the SVG as <style>, a background <rect>, then four
@@ -111,11 +111,8 @@ def flatten(path):
     root.set("height", f"{h:.0f}")
     root.set("viewBox", f"{x0:.2f} {y0:.2f} {w:.2f} {h:.2f}")
 
-    for rect in root.findall(f"{{{SVG}}}rect"):   # background
-        rect.set("x", f"{x0:.2f}")
-        rect.set("y", f"{y0:.2f}")
-        rect.set("width", f"{w:.2f}")
-        rect.set("height", f"{h:.2f}")
+    for rect in root.findall(f"{{{SVG}}}rect"):
+        root.remove(rect)   # the background fill; the page shows through instead
 
     tree.write(path, encoding="unicode", xml_declaration=False)
     print(f"{path}: dropped {len(panels)} panels, canvas now {w:.0f}x{h:.0f}")
