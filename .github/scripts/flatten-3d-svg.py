@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""Reduce a github-profile-3d-contrib SVG to just its contribution calendar,
-level the isometric angle so the year runs horizontally, and crop the canvas
-to the drawing that is left.
+"""Reduce a github-profile-3d-contrib SVG to just its contribution calendar
+and crop the canvas to it. The calendar itself is left exactly as generated.
 
 The generator lays out the SVG as <style>, a background <rect>, then four
 top-level <g> elements: the calendar, the radar chart, the language pie and
@@ -9,7 +8,6 @@ the stats row. Everything after the first group is dropped.
 """
 
 import math
-import os
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -17,11 +15,7 @@ import xml.etree.ElementTree as ET
 SVG = "http://www.w3.org/2000/svg"
 ET.register_namespace("", SVG)
 
-# The generator draws at 30 deg. Shearing by less than that keeps some of the
-# isometric tilt: the leftover angle is atan(tan(30) - tan(SHEAR)).
-SHEAR = float(os.environ.get("SHEAR", 22))    # deg of tilt taken out
-SQUASH = float(os.environ.get("SQUASH", 0.85)) # vertical scale after the shear
-PAD = 10        # px of breathing room around the calendar
+PAD = 10   # px of breathing room around the calendar
 
 FUNC = re.compile(r"(\w+)\(([^)]*)\)")
 NUM = re.compile(r"-?[\d.]+(?:e-?\d+)?")
@@ -100,8 +94,6 @@ def flatten(path):
     calendar, panels = groups[0], groups[1:]
     for g in panels:
         root.remove(g)
-
-    calendar.set("transform", f"scale(1 {SQUASH}) skewY(-{SHEAR})")
 
     x0, y0, x1, y1 = bounds(calendar)
     x0, y0, x1, y1 = x0 - PAD, y0 - PAD, x1 + PAD, y1 + PAD
