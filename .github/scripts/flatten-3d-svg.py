@@ -9,6 +9,7 @@ the stats row. Everything after the first group is dropped.
 """
 
 import math
+import os
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -16,8 +17,10 @@ import xml.etree.ElementTree as ET
 SVG = "http://www.w3.org/2000/svg"
 ET.register_namespace("", SVG)
 
-SHEAR = 30      # deg -- matches the generator's own projection angle
-SQUASH = 0.62   # vertical scale applied after the shear; lower = flatter
+# The generator draws at 30 deg. Shearing by less than that keeps some of the
+# isometric tilt: the leftover angle is atan(tan(30) - tan(SHEAR)).
+SHEAR = float(os.environ.get("SHEAR", 22))    # deg of tilt taken out
+SQUASH = float(os.environ.get("SQUASH", 0.85)) # vertical scale after the shear
 PAD = 10        # px of breathing room around the calendar
 
 FUNC = re.compile(r"(\w+)\(([^)]*)\)")
