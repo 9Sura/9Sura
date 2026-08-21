@@ -16,8 +16,8 @@ LINE_H = FONT_SIZE * 1.45
 PAD_X, PAD_Y = 22, 20
 RADIUS = 10
 
-SEC_PER_CHAR = 0.003            # typing speed
-LINE_GAP = 0.02                 # pause between lines
+TOTAL_SECONDS = 3.0             # how long the whole box takes to type
+GAP_SHARE = 0.08                # of that, the share spent pausing between lines
 
 BG = "#0d1117"
 PLAIN = "#c9d1d9"
@@ -62,6 +62,10 @@ def line_runs(line):
 
 
 def build(lines):
+    chars = sum(max(len(l), 1) for l in lines)
+    line_gap = TOTAL_SECONDS * GAP_SHARE / len(lines)
+    sec_per_char = TOTAL_SECONDS * (1 - GAP_SHARE) / chars
+
     cols = max(len(l) for l in lines)
     width = cols * CHAR_W + PAD_X * 2
     height = len(lines) * LINE_H + PAD_Y * 2
@@ -69,7 +73,7 @@ def build(lines):
     css, body = [], []
     start = 0.0
     for i, line in enumerate(lines):
-        dur = max(len(line), 1) * SEC_PER_CHAR
+        dur = max(len(line), 1) * sec_per_char
         w = len(line) * CHAR_W
         css.append(
             f"@keyframes t{i}{{from{{width:0}}to{{width:{w:.1f}px}}}}"
@@ -95,7 +99,7 @@ def build(lines):
             + "".join(runs)
             + "</text>"
         )
-        start += dur + LINE_GAP
+        start += dur + line_gap
 
     cursor_y = PAD_Y + (len(lines) - 1) * LINE_H + 3
     css.append(
