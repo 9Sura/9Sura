@@ -16,8 +16,8 @@ LINE_H = FONT_SIZE * 1.45
 PAD_X, PAD_Y = 22, 20
 RADIUS = 10
 
-SEC_PER_CHAR = 0.006            # typing speed
-LINE_GAP = 0.04                 # pause between lines
+SEC_PER_CHAR = 0.003            # typing speed
+LINE_GAP = 0.02                 # pause between lines
 
 BG = "#0d1117"
 PLAIN = "#c9d1d9"
