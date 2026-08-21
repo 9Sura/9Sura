@@ -17,7 +17,7 @@ PAD_X, PAD_Y = 22, 20
 RADIUS = 10
 
 TOTAL_SECONDS = 3.0             # how long the whole box takes to type
-GAP_SHARE = 0.08                # of that, the share spent pausing between lines
+CASCADE_SHARE = 0.45            # of that, the share spent staggering line starts
 
 BG = "#0d1117"
 PLAIN = "#c9d1d9"
@@ -62,18 +62,18 @@ def line_runs(line):
 
 
 def build(lines):
-    chars = sum(max(len(l), 1) for l in lines)
-    line_gap = TOTAL_SECONDS * GAP_SHARE / len(lines)
-    sec_per_char = TOTAL_SECONDS * (1 - GAP_SHARE) / chars
+    # every line reveals at once; each one starts a beat after the line above
+    step = TOTAL_SECONDS * CASCADE_SHARE / max(len(lines) - 1, 1)
+    line_dur = TOTAL_SECONDS - step * (len(lines) - 1)
 
     cols = max(len(l) for l in lines)
     width = cols * CHAR_W + PAD_X * 2
     height = len(lines) * LINE_H + PAD_Y * 2
 
     css, body = [], []
-    start = 0.0
     for i, line in enumerate(lines):
-        dur = max(len(line), 1) * sec_per_char
+        start = i * step
+        dur = line_dur
         w = len(line) * CHAR_W
         css.append(
             f"@keyframes t{i}{{from{{width:0}}to{{width:{w:.1f}px}}}}"
@@ -99,8 +99,8 @@ def build(lines):
             + "".join(runs)
             + "</text>"
         )
-        start += dur + line_gap
 
+    start = TOTAL_SECONDS
     cursor_y = PAD_Y + (len(lines) - 1) * LINE_H + 3
     css.append(
         "@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}"
