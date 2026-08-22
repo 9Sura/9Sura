@@ -25,7 +25,6 @@ COMMENT = "#5b6675"             # the ascii art column
 KEYWORD = "#ff7b72"
 NAME = "#ffa657"
 STRING = "#a5d6ff"
-CURSOR = "#ffa657"
 
 KEYWORDS = {"class", "def", "return", "import", "from", "None", "True", "False"}
 
@@ -100,13 +99,6 @@ def build(lines):
             + "</text>"
         )
 
-    start = TOTAL_SECONDS
-    cursor_y = PAD_Y + (len(lines) - 1) * LINE_H + 3
-    css.append(
-        "@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}"
-        f"#cursor{{opacity:0;animation:blink 1s steps(1) {start:.2f}s infinite}}"
-    )
-
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width:.0f}" '
         f'height="{height:.0f}" viewBox="0 0 {width:.0f} {height:.0f}" '
@@ -115,9 +107,7 @@ def build(lines):
         f"<style>{''.join(css)}</style>"
         f'<rect width="100%" height="100%" rx="{RADIUS}" fill="{BG}"/>'
         + "".join(body)
-        + f'<rect id="cursor" x="{PAD_X}" y="{cursor_y:.1f}" '
-        f'width="{CHAR_W:.1f}" height="{FONT_SIZE:.1f}" fill="{CURSOR}"/>'
-        "</svg>"
+        + "</svg>"
     )
 
 
